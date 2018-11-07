@@ -256,3 +256,85 @@ func gotoTest() {
 ```
 
 ### 4、`break`与`continue`与其他语言一致
+
+## 6、函数
+
+-   函数的定义：
+
+    -   定义一个传入两个参数，并返回一个值的函数
+    
+    ```cgo
+    func fun3(n1, n2 int) int {
+        return n1 + n2
+    }
+    ```
+    
+    -   定义一个传入两个参数，并返回两个值的函数
+    
+    ```cgo
+    func fun4(str1, str2 string) (string, string) {
+    	return str1, str2
+    }
+    ```
+
+-   在默认情况下，Go语言使用的都是值传递(数组等类型除外)，若需要使用引用传递，需使用指针，如下:
+
+```cgo
+func fun2(n *int) {
+	*n = 9
+}
+```
+
+-   将函数作为值:
+
+```cgo
+fun6 := func(n1, n2 int) int {
+    return n1 + n2
+}
+
+func main() {
+    fmt.Println(fun6(3, 4))
+}
+```
+
+-   闭包
+
+```cgo
+func fun7(n1, n2 int) func(n3, n4 int) int {
+	i := n1
+	return func(n3, n4 int) int {
+		return i + n2 + n3 + n4
+	}
+}
+
+func main() {
+    fun7 := fun7(2, 3)
+    fmt.Println(fun7(3, 4))
+    fmt.Println(fun7(5, 6))
+}
+```
+
+-   `方法`:一个包含了接受者的函数
+
+```cgo
+/*
+	定义结构体.
+ */
+type type1 struct {
+	name string
+}
+
+/*
+	定义属于type1类型的方法.
+ */
+func (t type1) getName() string {
+	return t.name
+}
+
+func main() {
+    // 调用方法
+    var t type1
+    t.name = "dragonhht"
+    fmt.Println(t.getName())
+}
+```
