@@ -73,7 +73,7 @@
 
     -   导入时使用`_`&nbsp;&nbsp;&nbsp;(导入该包，但只执行`init()`方法，不能调用其他函数)
 
-# 3、数据类型
+## 3、数据类型
 
 -   `bool`： 布尔型，值为`true`、`false`,如：`var ok bool = true`
 
@@ -115,9 +115,9 @@
 
 -   派生类型
 
-# 4、变量与常量
+## 4、变量与常量
 
-## 1、变量
+### 1、变量
 
 -   定义： 使用关键字`var`定义变量(全局变量必须使用`var`关键字，局部变量则可省略),如: `var count int = 32`，定义局部变量时可省略`var`关键字,但需要使用`：=`进行赋值,如`n1, n2 := 2, 3`
 
@@ -141,6 +141,118 @@ var (
 
 -   特殊变量`_`
 
-## 2、常量
+### 2、常量
 
--   Go中的常量使用关键字`const`
+-   Go中的常量使用关键字`const`申明，如：`const testCount, d1, d3  = 33, "Hello", true`或`const d4 int = 32`,常量的申明也可使用分组申明,当使用分组申明时若为对常量赋值，则该常量将自动继承前一常量的非空表达式
+
+-   特殊常量`iota`:
+    
+    -   iota在const关键字出现时将会被重置为0
+    
+    -   const中每新增一行常量申明将使iota计数一次(分组申明)
+    
+## 5、控制语句
+
+### 1、条件语句
+
+#### 1、`if-else`:
+
+-   `if-else`的嵌套使用:
+
+```cgo
+func ifTest() {
+	a := 2
+	if a > 0 {
+		fmt.Println("a > 0")
+	} else {
+		if a == 0 {
+			fmt.Println("a == 0")
+		} else {
+			fmt.Println(" a <  0")
+		}
+	}
+}
+```
+
+#### 2、`switch`:
+
+-   `switch`语句的使用:
+
+```cgo
+func switchTest(num int) {
+	switch num {
+	case 1:
+		fmt.Println("this is 1")
+	case 2:
+		fmt.Println("this is 2")
+	default:
+		fmt.Println("this is not 1 or 2")
+	}
+}
+```
+
+#### 3、`select`：
+
+### 2、循环语句
+
+-   `for`的无限循环：当for语句为指明条件时，则默认为`for true {}`,如：
+
+```cgo
+/**
+	无限循环.
+ */
+func forTest1() {
+	count := 1
+	for {
+		count++
+		fmt.Println(count)
+		Sleep(1 * Second)
+	}
+}
+```
+
+-   设置条件的`for`循环:
+
+```cgo
+func forTest2() {
+	for i := 0; i < 5; i++{
+		fmt.Println(i)
+	}
+}
+```
+
+-   模拟`foreach`(若不需要`index`可使用特殊变量`_`)
+
+```cgo
+func forTest3() {
+	arr := []string{"a", "b", "c", "d", "e"}
+	for key, value := range arr {
+		fmt.Print(key)
+	}
+}
+```
+
+-   类似于`while`语句的写法:
+
+```cgo
+func forTest4() {
+	count := 0
+	for count < 5 {
+		fmt.Println(count)
+		count++
+	}
+}
+```
+
+### 3、`goto`:
+
+```cgo
+func gotoTest() {
+	goto One
+	fmt.Println("this after One")
+	One:
+		fmt.Println("after")
+}
+```
+
+### 4、`break`与`continue`与其他语言一致
