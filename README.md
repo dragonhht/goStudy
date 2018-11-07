@@ -17,6 +17,7 @@
     -   单个包逐个导入
 
     ```go
+    package main
     import "fmt"
     import "time"
     ```
@@ -24,6 +25,7 @@
     -   导入多个包
 
     ```go
+    package main
     import (
         "fmt"
         "time"
@@ -45,6 +47,7 @@
     -   使用别名&nbsp;&nbsp;&nbsp;(使用包中函数时，通过别名调用)
 
     ```go
+    package main
     import (
         user "test1"
     )
@@ -57,6 +60,7 @@
     -   导入时使用`.`&nbsp;&nbsp;&nbsp;(使用包中函数时，省略包名，直接通过函数名使用，不推荐使用，容易造成冲突)
 
     ```go
+    package main
     import (
         "fmt"
         . "time"
@@ -117,11 +121,12 @@
 
 -   定义： 使用关键字`var`定义变量(全局变量必须使用`var`关键字，局部变量则可省略),如: `var count int = 32`，定义局部变量时可省略`var`关键字,但需要使用`：=`进行赋值,如`n1, n2 := 2, 3`
 
--   同一行申明统一数据类型时各变量名用`，`隔开，如： `var a, b, c, d int = 1, 2, 3, 4` 或 ``
+-   同一行申明统一数据类型时各变量名用`,`隔开，如： `var a, b, c, d int = 1, 2, 3, 4`
 
 -   分组申明格式:
 
 ```go
+package main
 var (
 	s1 int
 	s2 uint
