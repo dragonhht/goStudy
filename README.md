@@ -435,10 +435,10 @@ if p1 == nil {
 
     ```cgo
     type 结构体名称 struct {
-       member definition1;
-       member definition2;
+       member1 type1;
+       member1 type2;
        ...
-       member definition3;
+       membern typen;
     }
     ```
     
@@ -520,3 +520,105 @@ func main() {
     	fmt.Println(slice4)
     }
     ```
+
+## 11、`Map`集合
+
+-   定义Map:
+
+    -   通过`map`关键字定义:格式为`var 变量名 map[键的类型]值得类型`, 如`map2 := map[string]string{"name": "dragonhht", "age": "18"}`
+    
+    -   使用`make `函数创建Map: 格式为`make(map[键类型]值类型)`, 如`map2 := make(map[string]string)`,该方式会进行初始化
+    
+    -   定义的Map不进行初始化默认值为`nil`,不能用来存放键值
+    
+-   使用Map
+
+    -   放入键值: `map1["hello"] = "world"`
+    
+    -   使用Map中某个键的值:`fmt.Println(map1["name"])`
+    
+    -   `delete`函数，用于删除Map中的元素，`delete(map1, "name")`
+    
+## 12、`interface`接口
+
+-   接口的定义:
+
+    -   接口的定义格式:
+    
+    ```cgo
+    type 接口名 interface {
+       method_name1 [return_type]
+       method_name2 [return_type]
+       method_name3 [return_type]
+       ...
+       method_namen [return_type]
+    }
+    ```
+
+    -   接口定义示例
+    
+    ```cgo
+    type interface1 interface {
+    	getName() string
+    	setName(name string)
+    }
+    ```
+    
+-   接口体实现接口示例:
+
+```cgo
+package main
+
+import "fmt"
+
+/*
+	定义接口.
+ */
+type Interface1 interface {
+	getName() string
+	setName(name string)
+}
+
+/*
+	定义结构体.
+ */
+type Struct1 struct {
+	name string
+}
+
+/*
+	实现接口.
+ */
+func (struct1 Struct1) getName() string  {
+	return struct1.name
+}
+
+/*
+	实现接口.
+ */
+func (struct1 *Struct1) setName(name string) {
+	struct1.name = name
+}
+
+
+func main() {
+	stu := Struct1{"dragonhht"}
+	fmt.Println(stu)
+	fmt.Println(stu.getName())
+	stu.setName("huang")
+	fmt.Println(stu)
+	fmt.Println(stu.getName())
+}
+```
+
+## 13、错误处理
+
+> Go语言通过内置的错误接口提供了非常简单的错误处理机制, 在编码中我们可以通过实现`error`接口类型来生成错误信息  
+
+-   内置的错误接口如下:
+
+```cgo
+type error interface {
+	Error() string
+}
+```
