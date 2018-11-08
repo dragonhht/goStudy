@@ -338,3 +338,185 @@ func main() {
     fmt.Println(t.getName())
 }
 ```
+
+## 7、数组(支持多维数组，使用同其他语言类似)
+
+-   数组的申明:
+
+    -   申明数组，并不进行初始化,`var 数组名 [长度] 类型`, 如:
+    
+    ```cgo
+    var arr [5] int
+    ```
+    
+    -   申明数组并进行初始化操作:
+    
+    ```cgo
+    // 方式一, 指定数组大小
+    var arr1 = [5]int{1, 2, 3, 4, 5}
+    fmt.Println(arr1)
+    // 方式二, 不手动设置数组大小，通过元素个数自动设置数组大小
+    var arr2 = []int{1, 2, 4, 5}
+    fmt.Println(arr2)
+    ```
+    
+-   数组元素的获取同其他语言相同，通过索引获取
+
+```cgo
+var arr2 = []int{1, 2, 4, 5}
+fmt.Println(arr2[2])
+```
+
+-   函数中将数组作为参数
+
+```cgo
+func arrTest(arr []int) {
+	arr[0] = 3
+}
+
+func main() {
+    arr := []int{1, 2, ,3}
+    arrTest(arr)
+    fmt.Println(arr)
+}
+```
+
+## 8、指针
+
+> 指针用于指向一个值的内存地址
+
+-   Go语言获取一个值得内存地址同c类似,使用取地址符`&`获取变量的地址，如`count := 3;fmt.Println(&count)`
+
+-   Go语言中指针的申明同c语言类似,使用`*`来表示某个变量为指针类型, 如:
+
+```cgo
+var count = 3
+var p *int = &count
+fmt.Println(p)
+```
+
+-   将指针类型作为函数形参
+
+```cgo
+func pointTest(n *int) {
+	*n = 9
+}
+
+func main() {
+	var count = 3
+	pointTest(&count)
+	fmt.Println(count)
+}
+```
+
+-   空指针`nil`:
+
+> Go中的空指针`nil`同Java中的`null`类似
+
+```cgo
+var p1 *int
+fmt.Println(p1)
+```
+
+-   空指针的判断
+
+```cgo
+var p1 *int
+if p1 == nil {
+    fmt.Println("count is nil")
+}
+```
+
+## 9、结构体
+
+-   结构体的定义
+
+    -   结构体定义格式
+
+    ```cgo
+    type 结构体名称 struct {
+       member definition1;
+       member definition2;
+       ...
+       member definition3;
+    }
+    ```
+    
+    -   例如:
+    
+    ```cgo
+    type Student struct {
+    	name string
+    	age int8
+    }
+    ```
+    
+-   结构体的使用(结构体内成员的访问通过`.`号进行)
+
+```cgo
+func main() {
+	stu := Student{"dragonhht", 18}
+	stu.age = 20
+	fmt.Println(stu)
+}
+```
+
+-   将结构体作为函数参数时，在Go中并不会想Java中一样使用引用传递，而是值传递，需要使用类似于Java中的引用传递需使用指针实现
+
+```cgo
+/*
+	值传递，不改变原有的值
+ */
+func setStudentName(student Student) {
+	student.name = "hello"
+}
+
+/*
+	通过指针，改变了原有的值.
+ */
+func setStudentName1(student *Student) {
+	student.name = "hello"
+}
+
+func main() {
+ 	stu := Student{"dragonhht", 18}
+ 	stu.age = 20
+ 	fmt.Println(stu)
+ 	setStudentName(stu)
+ 	fmt.Println(stu)
+ 	setStudentName1(&stu)
+ 	fmt.Println(stu)
+ }
+```
+
+## 10、切片
+
+-   创建切片(使用`make`函数): `var slice1 []int = make([]int, 5)`
+
+-   切片在为初始化前默认为`nil`，长度为`0`
+
+-   切片的初始化
+
+    -   通过初始化数组的形式初始化切片:`slice2 := [] int {1, 2, 3}`
+    
+    -   通过数组的引用来初始化切片: `arr := []int{1, 2, 3, 4, 5, 6, 7};slice3 := arr[:]; slice4:= arr[1:3]`
+    
+-   切片的使用
+
+    -   `len()`函数,获取切片长度:`fmt.Println(len(slice3))`
+    
+    -   `cap()`函数，计算容量:`fmt.Println(cap(slice3))`
+    
+    -   `append()`函数，向切片中添加新元素:`slice3 = append(slice3, 55);fmt.Println(slice3)`
+    
+    -   `copy()`函数，拷贝切片:如下代码为将`slice3`的内容拷贝到`slice4`
+    
+    ```cgo
+    func main() {
+    	arr := []int{1, 2, 3, 4, 5, 6, 7}
+    	slice3 := arr[:]
+    	var slice4 = make([]int, 5, 6)
+    	copy(slice4, slice3)
+    	fmt.Println(slice4)
+    }
+    ```

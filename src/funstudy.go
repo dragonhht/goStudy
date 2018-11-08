@@ -32,6 +32,10 @@ func fun7(n1, n2 int) func(n3, n4 int) int {
 	}
 }
 
+func fun8(n1 int, fun func(x int)) {
+	fun(n1)
+}
+
 /*
 	定义结构体.
  */
