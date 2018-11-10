@@ -191,8 +191,6 @@ func switchTest(num int) {
 }
 ```
 
-#### 3、`select`：
-
 ### 2、循环语句
 
 -   `for`的无限循环：当for语句为指明条件时，则默认为`for true {}`,如：
@@ -617,7 +615,7 @@ func main() {
 
 -   内置的错误接口如下:
 
-```cgo
+```cgo 
 type error interface {
 	Error() string
 }
@@ -625,4 +623,151 @@ type error interface {
 
 ## 14、反射
 
+```cgo
+func info(inter interface{}) {
+	// 通过t可获取定义中的所有元素
+	t := reflect.TypeOf(inter)
+	fmt.Println("Type is ", t.Name())
+	// 通过field可获取存储的值，也可去改变他
+	filed := reflect.ValueOf(inter)
+	// 获取所有的属性
+	for i := 0; i < t.NumField(); i++ {
+		// 获取属性和相应的值
+		f := t.Field(i)
+		val := filed.Field(i).Interface()
+		fmt.Printf("%s : %v = %v\n", f.Name, f.Type, val)
+	}
+
+	// 获取所有的方法
+	for i := 0; i < t.NumMethod(); i++ {
+		m := t.Method(i)
+		fmt.Printf("%s : %v\n", m.Name, m.Type)
+	}
+}
+```
+
+## 15、并发
+
+### 1、Goroutine
+
+> 当一个程序启动时，其主函数即在一个单独的goroutine中运行，我们叫它main goroutine。新的goroutine会用`go`语句来创建。在语法上，go语句是一个普通的函数或方法调用前加上关键字go。go语句会使其语句中的函数在一个新创建的goroutine中运行
+
+-   通过使用关键字`go`启动一个线程(此处因main迅速结束，所以无法输出任何内容，该情况需使用`Channel`)
+
+```cgo
+func run() {
+	for i := 0; i < 10; i++ {
+		fmt.Println("Go run...", i)
+
+	}
+}
+
+func main() {
+	go run()
+}
+```
+
+-   Goroutine通过通信类共享内存，而不是通过共享内存来通信
+
+####   `Channels`
+
+-   一个channels是一个通信机制，它可以让一个goroutine通过它给另一个goroutine发送值信息
+
+-   创建`channel`(channel通过`make`函数创建)
+
+> 一个基于无缓存Channels的发送操作将导致发送者goroutine阻塞，直到另一个goroutine在相同的Channels上执行接收操作，当发送的值通过Channels成功传输之后，两个goroutine可以继续执行后面的语句。反之，如果接收操作先发生，那么接收者goroutine也将阻塞，直到有另一个goroutine在相同的Channels上执行发送操作。
+
+```cgo
+// 创建无缓冲的channel
+c := make(chan bool)
+// 创建缓冲区为5的channel
+c2 := make(chan int, 5)
+```
+
+-   channel有`发送`和`接收`两个主要操作
+
+    -   发送：发送语句将一个值从一个goroutine通过channel发送到另一个执行接收操作的goroutine，发送操作使用运算法`<-`
+    
+    ```cgo
+    // 发送, <- 运算符分割channel和要发送的值
+    c := make(chan bool)
+    c <- true
+    ```
+    
+    -   接收：接收通过channel发送的值，同发送一样，使用运算符`<-`
+    
+    ```cgo
+    // <- 运算符写在channel对象之前
+    <- c
+    // 也可用变量接收发送的值
+    // x := <- c
+    ```
+    
+-   `close`操作(用于关闭channel)
+
+> 关闭channel后，对该channel进行任何发送操作，则都会导致`panic`异常，但依旧可以进行接收操作，接收以前成功发送的数据；如果channel中已经没有数据的话讲产生一个零值的数据。
+
+    -   close操作
+    
+    ```cgo
+    close(c)
+    ```
+
+-   基于无缓存Channels的发送和接收操作将导致两个goroutine做一次`同步操作`。
+
+-   异步操作
+
+    -   通过带缓存的channel：
+    
+    ```cgo
+    func main() {
+    	// 调用CPU核数
+    	runtime.GOMAXPROCS(runtime.NumCPU())
+    	c := make(chan bool, 10)
+    	for i := 0; i < 10; i++ {
+    		go func() {
+    			runCount++
+    			fmt.Println(runCount)
+    			c <- true
+    		}()
+    	}
+    
+    	for i := 0; i < 10; i++ {
+    		<- c
+    	}
+    }
+    ```
+    
+    -   通过`sync.WaitGroup`
+    
+    ```cgo
+    func run(w *sync.WaitGroup) {
+    	runCount++
+    	fmt.Println(runCount)
+    	// 标记任务完成，减少WaitGroup
+    	w.Done()
+    }
+    
+    func main() {
+    	// 调用CPU核数
+    	runtime.GOMAXPROCS(runtime.NumCPU())
+    	//c := make(chan bool, 10)
+    	// 创建WaitGroup
+    	wg := sync.WaitGroup{}
+    	// 添加10个WaitGroup
+    	wg.Add(10)
+    	for i := 0; i < 10; i++ {
+    		go run(&wg)
+    	}
+    	//等待完成
+    	wg.Wait()
+    }
+    ```
+    
+-   `Select`
+
+> 可处理一个或多个channel的发送与接收  
+> 同时有多个可用的channel时按随机顺序处理  
+> 可用空的select来阻塞main函数  
+> 可设置超时
 

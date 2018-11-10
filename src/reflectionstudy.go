@@ -15,9 +15,10 @@ func (user User) Study() {
 }
 
 func info(inter interface{}) {
+	// 通过t可获取定义中的所有元素
 	t := reflect.TypeOf(inter)
 	fmt.Println("Type is ", t.Name())
-
+	// 通过field可获取存储的值，也可去改变他
 	filed := reflect.ValueOf(inter)
 	// 获取所有的属性
 	for i := 0; i < t.NumField(); i++ {
