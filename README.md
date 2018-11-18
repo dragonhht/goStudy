@@ -771,3 +771,4 @@ c2 := make(chan int, 5)
 > 可用空的select来阻塞main函数  
 > 可设置超时
 
+## 16、IO操作
