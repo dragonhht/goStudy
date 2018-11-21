@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"html/template"
+	"strconv"
+	"regexp"
 )
 
 /*
@@ -40,6 +42,31 @@ func login(w http.ResponseWriter, r *http.Request) {
 		// 执行登录逻辑判断
 		fmt.Println("username:", r.Form["username"])
 		fmt.Println("password:", r.Form["password"])
+
+		// 检验
+		// 必填
+		if len(r.Form.Get("username")) == 0 {
+			fmt.Println("username为空")
+		}
+
+		// 转化为int数字
+		getint, err := strconv.Atoi(r.Form.Get("age"))
+		// 如果转换成功则为数字，否则则不是
+		if err != nil {
+			fmt.Println(err)
+		}
+		// 转换成功为数字
+		fmt.Println("age: ", getint)
+		// 使用正则表达式检验数字
+		if m, _ := regexp.MatchString("[0-9]+$", r.Form.Get("age")); m {
+			// 匹配成功
+			fmt.Println("age is num :", m)
+		}
+
+		// 判断是否全为中文
+		if m, _ := regexp.MatchString("^\\p{Han}+$", r.Form.Get("username")); m {
+			fmt.Println("username 为全中文")
+		}
 	}
 
 }
