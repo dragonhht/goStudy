@@ -877,4 +877,12 @@ c2 := make(chan int, 5)
     }
     ```
 
-    -   
+-   预防跨站脚本
+
+## 18、数据库操作
+
+> 绝大部分第三方开发数据库驱动时都会实现接口`database/sql`
+
+-   [MySQL操作](./mysql.go)
+
+-   [Redis](./redis.go)
