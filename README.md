@@ -883,6 +883,6 @@ c2 := make(chan int, 5)
 
 > 绝大部分第三方开发数据库驱动时都会实现接口`database/sql`
 
--   [MySQL操作](./mysql.go)
+-   [MySQL操作](./src/mysql.go)
 
--   [Redis](./redis.go)
+-   [Redis](./src/redis.go)
